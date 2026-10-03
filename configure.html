@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero compact">
+  <div class="eyebrow">MODEL WORKBENCH / 02</div>
+  <h1>Configure your <span>experiment.</span></h1>
+  <p class="subtext">Your dataset is ready. Choose the target, model and optimization method.</p>
+</section>
+<section class="panel">
+  <div class="section-heading"><div><span class="step">02</span><h2>Dataset preview</h2></div><span class="muted">{{ row_count }} ROWS · {{ col_count }} COLUMNS</span></div>
+  <div class="table-wrap"><table>
+    <thead><tr>{% for col in columns %}<th>{{ col }}</th>{% endfor %}</tr></thead>
+    <tbody>{% for row in preview %}<tr>{% for col in columns %}<td>{{ row[col] }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+<section class="panel">
+  <div class="section-heading"><div><span class="step">03</span><h2>Model configuration</h2></div></div>
+  <form action="{{ url_for('optimize') }}" method="post" class="config-form">
+    <input type="hidden" name="token" value="{{ token }}">
+    <label>Target column
+      <select name="target" required><option value="">Select target column</option>{% for col in columns %}<option value="{{ col }}">{{ col }}</option>{% endfor %}</select>
+    </label>
+    <label>Classification model
+      <select name="model" required>{% for model in models %}<option value="{{ model }}" {% if model == 'Random Forest' %}selected{% endif %}>{{ model }}</option>{% endfor %}</select>
+    </label>
+    <label>Optimization method
+      <select name="method"><option value="grid">Grid Search</option><option value="random">Random Search</option></select>
+    </label>
+    <div class="note">The data is split into training and testing sets. The same test set is used to compare the baseline and optimized models.</div>
+    <button class="primary" type="submit">Run optimization <span>→</span></button>
+  </form>
+</section>
+{% endblock %}
